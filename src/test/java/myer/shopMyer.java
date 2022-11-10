@@ -33,12 +33,13 @@ public class shopMyer {
         logger = report.createTest("Myer Shopping Cart");
         wk.setLogger(logger);
         util.setLogger(logger);
+        //Start browser
         WebDriver driver = BrowserFactory.startBrowser(browser);
         driver.get(url);
         logger.log(Status.INFO, "Navigated to :" + url);
         //Verify browser is on the Home Page
         wk.VerifyPageExists(driver, "MYER | Shop Fashion, Homewares, Beauty, Toys & More");
-        //Search for Lego Star Wars
+        //Search for item
         wk.EnterNoVerification_Se(driver.findElement(By.id("search-input")),Search);
        // WebElement resultContainer= driver.findElement(By.xpath("//div[@data-automation='products-container']"));
         WebElement resultCount= driver.findElement(By.xpath("//span[@data-automation='product-total']"));
@@ -46,33 +47,31 @@ public class shopMyer {
         //Verify 6 results are found. Please note this step might fail if the number of products change from 6
         util.CaptureElementClip_Se(driver,resultCount,Status.PASS,"Search Results",imgloc);
         wk.VerifyElementExists(resultCount ,ResultCount);
-        String item1Link = Item_link;
-       String item1 = Item1;
+        //Select an item
         WebElement e_item1 = driver.findElement(By.xpath(
-                "//span[@class='screen-reader-text'][normalize-space()='"+item1Link+"']/parent::a"));
-        wk.Click_Se(e_item1,item1);
+                "//span[@class='screen-reader-text'][normalize-space()='"+Item_link+"']/parent::a"));
+        wk.Click_Se(e_item1,Item1);
         util.CaptureScreenClipNoScroll_Se(driver,Status.PASS,"Item Selected",imgloc);
-
+        // Add item to bag
         WebElement e_itemTitle = driver.findElement(By.xpath("//span[@data-automation='product-title']"));
-        wk.VerifyElementExists(e_itemTitle ,item1);
+        wk.VerifyElementExists(e_itemTitle ,Item1);
         wk.Click_Se(driver.findElement(By.id("add-to-bag-btn")),"ADD TO BAG");
-
+        // Verify Bag
         WebElement e_bagTitle = driver.findElement(By.xpath("//h2[@class='addBagTitle']"));
         WebElement e_bagItm1 = driver.findElement(By.xpath("//span[@class='rp_name']"));
 
         util.CaptureScreenClipNoScroll_Se(driver,Status.PASS,"Item Added To Bag",imgloc);
         wk.VerifyElementExists(e_bagTitle ,"Item added to bag");
-        wk.VerifyElementExists(e_bagItm1 ,item1);
+        wk.VerifyElementExists(e_bagItm1 ,Item1);
         wk.Click_Se(driver.findElement(By.xpath("//button[@data-automation='view-bag-checkout-btn']"))
                 ,"VIEW BAG AND CHECKOUT");
-
         util.CaptureScreenClip_Se(driver,Status.PASS,"My Bag",imgloc);
+        // My Bag
         wk.VerifyPageExists(driver,"Bag | Myer");
-
-
         wk.ClickJS_Se(driver.findElement(By.xpath("//button[@data-automation='continue-to-checkout']"))
                 ,"CONTINUE");
         util.CaptureScreenClip_Se(driver,Status.PASS,"Checkout",imgloc);
+        //Check Out Screen
         wk.VerifyElementExists(driver.findElement(By.xpath("//h1[@data-automation='main-heading']")),
                 "Checkout");
         driver.close();
